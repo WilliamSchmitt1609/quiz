@@ -1,0 +1,108 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Titre de la page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+
+
+<div id="app">
+    <!-- Titre du quiz -->
+    <h1>{{ quiz.title }}</h1>
+    <!-- Questions: on affiche une div pour chaque question -->
+    <div v-for="(question, index) in quiz.questions">
+        <div v-show="index === questionIndex">
+            <h2>{{ question.text }}</h2>
+      <!-- Responses: on affiche une balise li pour chaque réponse possible -->
+                <li v-for="response in question.responses">
+                  <label>
+                    <!-- 1: je  mets "value" par défaut à "true" si la réponse est correcte -->
+                    <!-- 2: liaison entre le nom des réponses et l'index des questions -->
+                    <!-- 3: je fais un lien avec l'array userResponses -->
+                    <input type="radio" 
+                           v-bind:value="response.correct" 
+                           v-bind:name="index" 
+                           v-model="userResponses[index]"> {{response.text}}
+                  </label>
+                  
+                </li>
+                <button v-if="questionIndex > 0" v-on:click="prev">
+                  précédent
+                </button>
+                <button v-on:click="next">
+                  suivant
+                </button>
+        </div>
+    </div>
+            <!-- Dernière page, le quiz est fini, affichage du résultat -->
+        <div v-show="questionIndex === quiz.questions.length">
+              <h2>Bravo, vous avez terminé!</h2>
+              <p>Score total: {{ score() }} / {{ quiz.questions.length }}</p>
+        </div>
+</div>
+  
+  <!-- Chargement de Vue -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <!-- Initialisation de Vue -->
+  <script>
+    window.onload=function(){
+        var quiz = {
+            title: 'Mon questionnaire',
+            questions: [
+              {
+                text: "Question 1: le Dimetrodon est: ",
+                responses: [
+                  {text: 'Un dinosaure'}, 
+                  {text: 'Un synapside', correct: true},
+                  {text: 'Un oiseau'},
+                ]
+              }, 
+              {
+                text: "Question 2: quelle taille faisait le Diplodocus ?",
+                responses: [
+                  {text: '40 m ', correct: true}, 
+                  {text: '10 m'}, 
+                  {text: '70 m'}, 
+                ]
+              }, 
+              {
+                text: "Question 3: quand ont disparu les dinosaures ?",
+                responses: [
+                  {text: 'Il y a 65 millions d\'années', correct: true}, 
+                  {text: 'Il y a 8 millions d\'années'}, 
+                  {text: 'Il y a 1 milliard d\'années'}, 
+                ]
+              }
+            ]
+          };
+          
+          new Vue({
+            el: '#app',
+            data: { quiz: quiz, 
+                questionIndex: 0,
+                userResponses: Array(quiz.questions.length).fill(false),
+            },
+            methods: {
+                // Aller à la question suivante
+                next: function() {
+                  this.questionIndex++;
+                },
+                // Aller à la question précédente
+                prev: function() {
+                  this.questionIndex--;
+                },
+                // Afficher le score
+                score: function() {
+                  return this.userResponses.filter(function(val) { return val }).length;
+                }
+              }               
+          });
+        }
+    
+  </script>
+</body>
+</html>
