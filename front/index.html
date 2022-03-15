@@ -3,8 +3,10 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Titre de la page</title>
+  <title>Bienvenue sur préhistoquiz! </title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+<link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
 </head>
 <body>
   
@@ -12,13 +14,13 @@
 
 <div id="app">
     <!-- Titre du quiz -->
-    <h1>{{ quiz.title }}</h1>
+    <h1 class="text-3xl font-bold underline">{{ quiz.title }}</h1>
     <!-- Questions: on affiche une div pour chaque question -->
     <div v-for="(question, index) in quiz.questions">
         <div v-show="index === questionIndex">
             <h2>{{ question.text }}</h2>
-      <!-- Responses: on affiche une balise li pour chaque réponse possible -->
-                <li v-for="response in question.responses">
+      <!-- Chaque réponse est placée dans une balise <li> neutralisée par "list-none" -->
+                <li class="list-none" v-for="response in question.responses">
                   <label>
                     <!-- 1: je  mets "value" par défaut à "true" si la réponse est correcte -->
                     <!-- 2: liaison entre le nom des réponses et l'index des questions -->
@@ -28,20 +30,24 @@
                            v-bind:name="index" 
                            v-model="userResponses[index]"> {{response.text}}
                   </label>
-                  
                 </li>
+                <img class="h-100 w-100 rounded-full" :src="question.image" alt="" />
+                <!-- à partir de la question 2 (index 1) le bouton précédent apparait-->
                 <button v-if="questionIndex > 0" v-on:click="prev">
                   précédent
                 </button>
                 <button v-on:click="next">
                   suivant
                 </button>
+
         </div>
     </div>
-            <!-- Dernière page, le quiz est fini, affichage du résultat -->
+        <!-- Dernière page, le quiz est fini, affichage du résultat -->
         <div v-show="questionIndex === quiz.questions.length">
               <h2>Bravo, vous avez terminé!</h2>
+        <!-- Grace à la fonction score calcul du nombre de réponses correctes / le nombre total de questions-->
               <p>Score total: {{ score() }} / {{ quiz.questions.length }}</p>
+              <img class="h-100 w-100 rounded-full" src="https://cdn.pixabay.com/photo/2021/02/08/16/03/dinosaur-5995333_960_720.png" alt="" />
         </div>
 </div>
   
@@ -51,7 +57,7 @@
   <script>
     window.onload=function(){
         var quiz = {
-            title: 'Mon questionnaire',
+            title: 'Préhistoquiz',
             questions: [
               {
                 text: "Question 1: le Dimetrodon est: ",
@@ -59,7 +65,8 @@
                   {text: 'Un dinosaure'}, 
                   {text: 'Un synapside', correct: true},
                   {text: 'Un oiseau'},
-                ]
+                ],
+                image: "https://cdn.pixabay.com/photo/2014/05/18/19/14/dimetrodon-347308_960_720.jpg",
               }, 
               {
                 text: "Question 2: quelle taille faisait le Diplodocus ?",
@@ -67,7 +74,8 @@
                   {text: '40 m ', correct: true}, 
                   {text: '10 m'}, 
                   {text: '70 m'}, 
-                ]
+                ],
+                image: "https://cdn.pixabay.com/photo/2015/09/25/19/01/dinosaur-958011_960_720.jpg",
               }, 
               {
                 text: "Question 3: quand ont disparu les dinosaures ?",
@@ -75,7 +83,8 @@
                   {text: 'Il y a 65 millions d\'années', correct: true}, 
                   {text: 'Il y a 8 millions d\'années'}, 
                   {text: 'Il y a 1 milliard d\'années'}, 
-                ]
+                ],
+                image: "https://cdn.pixabay.com/photo/2018/08/24/15/46/asteroid-3628185_960_720.jpg",
               },
               {
                 text: "Question 4: quel est le plus grand prédateur qui ait existé parmi les dinosaures ?",
@@ -83,7 +92,8 @@
                   {text: 'Le tyrannosaure'}, 
                   {text: 'L\'allosaure'}, 
                   {text: 'Le spinosaure', correct: true}, 
-                ]
+                ],
+                image: "https://cdn.pixabay.com/photo/2021/09/16/15/41/dinosaur-6630392_960_720.jpg",
               }
             ]
           };
