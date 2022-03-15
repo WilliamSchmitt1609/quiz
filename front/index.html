@@ -6,50 +6,47 @@
   <title>Bienvenue sur préhistoquiz! </title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-<link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
 </head>
-<body>
-  
 
-
-<div id="app">
-    <!-- Titre du quiz -->
-    <h1 class="text-3xl font-bold underline">{{ quiz.title }}</h1>
-    <!-- Questions: on affiche une div pour chaque question -->
-    <div v-for="(question, index) in quiz.questions">
-        <div v-show="index === questionIndex">
-            <h2>{{ question.text }}</h2>
-      <!-- Chaque réponse est placée dans une balise <li> neutralisée par "list-none" -->
-                <li class="list-none" v-for="response in question.responses">
-                  <label>
-                    <!-- 1: je  mets "value" par défaut à "true" si la réponse est correcte -->
-                    <!-- 2: liaison entre le nom des réponses et l'index des questions -->
-                    <!-- 3: je fais un lien avec l'array userResponses -->
-                    <input type="radio" 
-                           v-bind:value="response.correct" 
-                           v-bind:name="index" 
-                           v-model="userResponses[index]"> {{response.text}}
-                  </label>
-                </li>
-                <img class="h-100 w-100 rounded-full" :src="question.image" alt="" />
-                <!-- à partir de la question 2 (index 1) le bouton précédent apparait-->
-                <button v-if="questionIndex > 0" v-on:click="prev">
-                  précédent
-                </button>
-                <button v-on:click="next">
-                  suivant
-                </button>
-
-        </div>
-    </div>
-        <!-- Dernière page, le quiz est fini, affichage du résultat -->
-        <div v-show="questionIndex === quiz.questions.length">
-              <h2>Bravo, vous avez terminé!</h2>
-        <!-- Grace à la fonction score calcul du nombre de réponses correctes / le nombre total de questions-->
-              <p>Score total: {{ score() }} / {{ quiz.questions.length }}</p>
-              <img class="h-100 w-100 rounded-full" src="https://cdn.pixabay.com/photo/2021/02/08/16/03/dinosaur-5995333_960_720.png" alt="" />
-        </div>
-</div>
+<body class="bg-green-200">  
+  <div id="app">
+      <!-- Titre du quiz -->
+      <h1 class="text-3xl font-bold underline">{{ quiz.title }}</h1>
+      <!-- Questions: on affiche une div pour chaque question -->
+      <div v-for="(question, index) in quiz.questions">
+          <div v-show="index === questionIndex">
+              <h2>{{ question.text }}</h2>
+        <!-- Chaque réponse est placée dans une balise <li> neutralisée par "list-none" -->
+                  <li class="list-none" v-for="response in question.responses">
+                    <label>
+                      <!-- 1: je  mets "value" par défaut à "true" si la réponse est correcte -->
+                      <!-- 2: liaison entre le nom des réponses et l'index des questions -->
+                      <!-- 3: je fais un lien avec l'array userResponses -->
+                      <input type="radio" 
+                            v-bind:value="response.correct" 
+                            v-bind:name="index" 
+                            v-model="userResponses[index]"> {{response.text}}
+                    </label>
+                  </li>
+                  <img class="h-100 w-100 rounded-full" :src="question.image" alt="" />
+                  <!-- à partir de la question 2 (index 1) le bouton précédent apparait-->
+                  <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" v-if="questionIndex > 0" v-on:click="prev">
+                    précédent
+                  </button>
+                  <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" v-on:click="next">
+                    suivant
+                  </button>
+          </div>
+      </div>
+          <!-- Dernière page, le quiz est fini, affichage du résultat -->
+          <div v-show="questionIndex === quiz.questions.length">
+                <h2>Bravo, vous avez terminé!</h2>
+          <!-- Grace à la fonction score calcul du nombre de réponses correctes / le nombre total de questions-->
+                <p>Score total: {{ score() }} / {{ quiz.questions.length }}</p>
+                <img class="h-100 w-100 rounded-full" src="https://cdn.pixabay.com/photo/2021/02/08/16/03/dinosaur-5995333_960_720.png" alt="" />
+          </div>
+  </div>
   
   <!-- Chargement de Vue -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -98,10 +95,14 @@
             ]
           };
           
-          new Vue({
+        new Vue({
+              // je récupère l'id de la div
             el: '#app',
+              // ma variable data
             data: { quiz: quiz, 
+              // je pars de l'index 0
                 questionIndex: 0,
+              // je stocke les réponses dans un tableau. La méthode .fill renvoie le tableau modifié
                 userResponses: Array(quiz.questions.length).fill(false),
             },
             methods: {
