@@ -9,14 +9,18 @@
   <link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-green-200">  
+<body class="bg-gradient-to-r from-amber-50 to-amber-300 w-auto font-mono">  
   <div id="app">
+    <div class="h-18 p-2">
       <!-- Titre du quiz -->
-      <h1 class="text-3xl font-bold underline">{{ quiz.title }}</h1>
+      <h1 class="text-center text-3xl font-bold underline">{{ quiz.title }}</h1>
+    </div>
       <!-- Questions: on affiche une div pour chaque question -->
-      <div v-for="(question, index) in quiz.questions">
+    <div v-for="(question, index) in quiz.questions">
           <div v-show="index === questionIndex">
+            <div class="question-text ml-10 mt-5">
               <h2>{{ question.text }}</h2>
+            
         <!-- Chaque réponse est placée dans une balise <li> neutralisée par "list-none" -->
                   <li class="list-none" v-for="response in question.responses">
                     <label>
@@ -29,22 +33,32 @@
                             v-model="userResponses[index]"> {{response.text}}
                     </label>
                   </li>
-                  <img class="h-100 w-100 rounded-full" :src="question.image" alt="" />
-                  <!-- à partir de la question 2 (index 1) le bouton précédent apparait-->
-                  <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" v-if="questionIndex > 0" v-on:click="prev">
-                    précédent
-                  </button>
-                  <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" v-on:click="next">
-                    suivant
-                  </button>
           </div>
-      </div>
+                <div class="image flex justify-center">
+                    <img class="h-65 w-75 rounded-full" :src="question.image" alt="" />
+                </div>
+                  <!-- à partir de la question 2 (index 1) le bouton précédent apparait-->
+                <div class="buttons flex justify-center m-2">
+
+                    <button class="bg-transparent hover:bg-yellow-500 text-black font-semibold hover:text-white py-2 px-4 border border-black hover:border-transparent rounded" v-if="questionIndex > 0" v-on:click="prev">
+                    précédent
+                    </button>
+
+                    <button class="bg-transparent hover:bg-yellow-600 text-black font-semibold hover:text-white py-2 px-4 border border-black hover:border-transparent rounded ml-5" v-on:click="next">
+                    suivant
+                    </button>
+
+                </div>
+          </div>
+    </div>
           <!-- Dernière page, le quiz est fini, affichage du résultat -->
-          <div v-show="questionIndex === quiz.questions.length">
+          <div class="endmessage ml-10 mt-5" v-show="questionIndex === quiz.questions.length">
                 <h2>Bravo, vous avez terminé!</h2>
           <!-- Grace à la fonction score calcul du nombre de réponses correctes / le nombre total de questions-->
                 <p>Score total: {{ score() }} / {{ quiz.questions.length }}</p>
-                <img class="h-100 w-100 rounded-full" src="https://cdn.pixabay.com/photo/2021/02/08/16/03/dinosaur-5995333_960_720.png" alt="" />
+            <div class="image flex justify-center"></div>
+                <img class="h-90 w-100 rounded-full" src="https://cdn.pixabay.com/photo/2021/02/08/16/03/dinosaur-5995333_960_720.png" alt="" />
+            </div>
           </div>
   </div>
   
@@ -53,73 +67,87 @@
   <!-- Initialisation de Vue -->
   <script>
     window.onload=function(){
-        var quiz = {
-            title: 'Préhistoquiz',
-            questions: [
-              {
-                text: "Question 1: le Dimetrodon est: ",
-                responses: [
-                  {text: 'Un dinosaure'}, 
-                  {text: 'Un synapside', correct: true},
-                  {text: 'Un oiseau'},
-                ],
-                image: "https://cdn.pixabay.com/photo/2014/05/18/19/14/dimetrodon-347308_960_720.jpg",
-              }, 
-              {
-                text: "Question 2: quelle taille faisait le Diplodocus ?",
-                responses: [
-                  {text: '40 m ', correct: true}, 
-                  {text: '10 m'}, 
-                  {text: '70 m'}, 
-                ],
-                image: "https://cdn.pixabay.com/photo/2015/09/25/19/01/dinosaur-958011_960_720.jpg",
-              }, 
-              {
-                text: "Question 3: quand ont disparu les dinosaures ?",
-                responses: [
-                  {text: 'Il y a 65 millions d\'années', correct: true}, 
-                  {text: 'Il y a 8 millions d\'années'}, 
-                  {text: 'Il y a 1 milliard d\'années'}, 
-                ],
-                image: "https://cdn.pixabay.com/photo/2018/08/24/15/46/asteroid-3628185_960_720.jpg",
-              },
-              {
-                text: "Question 4: quel est le plus grand prédateur qui ait existé parmi les dinosaures ?",
-                responses: [                 
-                  {text: 'Le tyrannosaure'}, 
-                  {text: 'L\'allosaure'}, 
-                  {text: 'Le spinosaure', correct: true}, 
-                ],
-                image: "https://cdn.pixabay.com/photo/2021/09/16/15/41/dinosaur-6630392_960_720.jpg",
-              }
-            ]
-          };
-          
-        new Vue({
-              // je récupère l'id de la div
-            el: '#app',
-              // ma variable data
-            data: { quiz: quiz, 
-              // je pars de l'index 0
-                questionIndex: 0,
-              // je stocke les réponses dans un tableau. La méthode .fill renvoie le tableau modifié
-                userResponses: Array(quiz.questions.length).fill(false),
-            },
-            methods: {
-                // Aller à la question suivante
-                next: function() {
-                  this.questionIndex++;
-                },
-                // Aller à la question précédente
-                prev: function() {
-                  this.questionIndex--;
-                },
-                // Afficher le score
-                score: function() {
-                  return this.userResponses.filter(function(val) { return val }).length;
-                }
-              }               
-          });
+        
+      const quiz = {
+        template: '#app',
+          name: 'App',
+    title: 'Préhistoquiz',
+    questions: [
+      {
+        text: "Question 1: le Dimetrodon est: ",
+        responses: [
+          {text: 'Un dinosaure'}, 
+          {text: 'Un synapside', correct: true},
+          {text: 'Un oiseau'},
+        ],
+        image: "https://cdn.pixabay.com/photo/2014/05/18/19/14/dimetrodon-347308_960_720.jpg",
+      }, 
+      {
+        text: "Question 2: quelle taille faisait le Diplodocus ?",
+        responses: [
+          {text: '40 m ', correct: true}, 
+          {text: '10 m'}, 
+          {text: '70 m'}, 
+        ],
+        image: "https://cdn.pixabay.com/photo/2015/09/25/19/01/dinosaur-958011_960_720.jpg",
+      }, 
+      {
+        text: "Question 3: quand ont disparu les dinosaures ?",
+        responses: [
+          {text: 'Il y a 65 millions d\'années', correct: true}, 
+          {text: 'Il y a 8 millions d\'années'}, 
+          {text: 'Il y a 1 milliard d\'années'}, 
+        ],
+        image: "https://cdn.pixabay.com/photo/2018/08/24/15/46/asteroid-3628185_960_720.jpg",
+      },
+      {
+        text: "Question 4: quel est le plus grand prédateur qui ait existé parmi les dinosaures ?",
+        responses: [                 
+          {text: 'Le tyrannosaure'}, 
+          {text: 'L\'allosaure'}, 
+          {text: 'Le spinosaure', correct: true}, 
+        ],
+        image: "https://cdn.pixabay.com/photo/2021/09/16/15/41/dinosaur-6630392_960_720.jpg",
+      },
+      {
+        text: "Question 5: A quelle période a vécu le terrible Tyrannosaurus Rex ?",
+        responses: [                 
+          {text: 'Le Trias'}, 
+          {text: 'Le Crétacé', correct: true}, 
+          {text: 'Le Jurassic'}, 
+        ],
+        image: "https://cdn.pixabay.com/photo/2018/03/29/10/54/nature-3271968_960_720.jpg",
+      }
+    ],
+    
+  };
+  new Vue({
+    // je récupère l'id de la div
+  el: '#app',
+    // ma variable data
+  data: { quiz: quiz, 
+    // je pars de l'index 0
+      questionIndex: 0,
+    // je stocke les réponses dans un tableau. La méthode .fill renvoie le tableau modifié
+      userResponses: Array(quiz.questions.length).fill(false),
+  },
+  methods: {
+      // Aller à la question suivante
+      next: function() {
+        this.questionIndex++;
+      },
+      // Aller à la question précédente
+      prev: function() {
+        this.questionIndex--;
+      },
+      // Afficher le score
+      score: function() {
+        return this.userResponses.filter(function(val) { return val }).length;
+      },
+  }                
+});
+
+
         }
     
   </script>
